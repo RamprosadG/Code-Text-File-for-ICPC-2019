@@ -91,39 +91,9 @@ int main() {
 
 // Mathematics, Number Theory & Combinatorics
 
-// Bigmod Algo
-
-int bigmod(int a, int b, int c) {
-	if (b == 0) return 1;
-	int x = bigmod(a, b / 2, c);
-	x = mul(x, x, c);
-	if (b & 1) x = mul(x, a, c);
-	return x;
-}
-
 // Different Types of Number
 
 struct Different_Types_of_Number {
-
-	vl factorial(int n) {
-		vl fac(n + 1, 0);
-		fac[0] = 1;
-		fac[1] = 1;
-		for (int i = 2; i <= n; i++) {
-			fac[i] = fac[i - 1] * i;
-		}
-		return fac;
-	}
-
-	vl fibonacci(int n) {
-		vl fib(n + 1, 0);
-		fib[0] = 0;
-		fib[1] = 1;
-		for (int i = 2; i <= n; i++) {
-			fib[i] = fib[i - 1] + fib[i - 2];
-		}
-		return fib;
-	}
 
 	vl derangement(int n) {
 		vl dr(n + 1, 0);
@@ -154,56 +124,6 @@ struct Different_Types_of_Number {
 			}
 		}
 		return ncr;
-	}
-};
-
-// Sieve of Eratosthenes(Prime)
-
-vi sieve(int n) {
-	std::vector<int> prime;
-	std::vector<bool> vis(n + 1, false);
-	vis[2] = true;
-	for (int i = 3; i <= n; i += 2) {
-		vis[i] = true;
-	}
-	for (int i = 3; i * i <= n; i += 2) {
-		if (vis[i]) {
-			for (int j = i * i; j <= n; j += i + i) {
-				vis[j] = false;
-			}
-		}
-	}
-	prime.push_back(2);
-	for (int i = 3; i <= n; i += 2) {
-		if (vis[i]) prime.push_back(i);
-	}
-	return prime;
-}
-
-// Bitwise Sieve(Prime)
-
-struct Bitwise_Sieve {
-
-	std::vector<int> vis;
-	std::vector<int> prime;
-
-	Bitwise_Sieve() {
-		vis.resize(N / 32 + 2, 0);
-	}
-
-	vi bitwise_sieve(int n) {
-		for (int i = 3; i * i <= n; i += 2) {
-			if (!(vis[i / 32] & (1 << (i % 32)))) {
-				for (int j = i * i; j <= n; j += i + i) {
-					vis[j / 32] |= (1 << (j % 32));
-				}
-			}
-		}
-		prime.push_back(2);
-		for (int i = 3; i <= n; i += 2) {
-			if (!(vis[i / 32] & (1 << (i % 32)))) prime.push_back(i);
-		}
-		return prime;
 	}
 };
 
@@ -282,27 +202,6 @@ struct Divisor {
 		}
 		if (n != 1) ans *= (n + 1);
 		return ans;
-	}
-
-	vl get_divisor(ll n) {
-		std::vector<ll> divisor;
-		for(ll i = 1; i * i <= n; i++) {
-			if(n % i == 0) {
-				divisor.push_back(i);
-				if(i != n / i) divisor.push_back(n / i);
-			}
-		}
-		return divisor;
-	}
-
-	vector<vi> divisor_sieve(int n) {
-		std::vector<vi> divisor(n + 1);
-		for (int i = 1; i <= n; i++) {
-			for (int j = i; j <= n; j += i) {
-				divisor[j].push_back(i);
-			}
-		}
-		return divisor;
 	}
 };
 
@@ -484,31 +383,6 @@ struct Josephus_Problem {
 **************************************************************************
 
 // String Algorithm
-
-// Hashing Algo
-
-struct Hash_Value {
-    int base;
-	std::vector<int> h, p;
-
-	Hash_Value() {
-		base = 97;
-		h.resize(N, 0);
-		p.resize(N, 1);
-	}
-
-	void hashing(string s) {
-		int n = sz(s);
-		for (int i = 1; i <= n; i++) {
-			p[i] = mul(p[i - 1], base);
-			h[i] = add(mul(h[i - 1], base), (s[i - 1] - 'a' + 1));
-		}
-	}
-
-	int get_hash(int a, int b) {
-		return sub(h[b], mul(h[a - 1], p[b - a + 1]));
-	}
-};
 
 // KMP Algo
 
@@ -918,52 +792,6 @@ struct Palindromic_Tree {
 
 // Dynamic Programming(DP)
 
-// 0 - 1 Knapsack
-
-ll call(ll w, int n) {
-	if (n == 0 || w == 0) return 0LL;
-	if (dp[n][w] != -1) return dp[n][w];
-	if (w < wt[n]) return dp[n][w] = call(w, n - 1);
-	return dp[n][w] = max(call(w, n - 1), val[n] + call(w - wt[n], n - 1));
-}
-
-// LCS of two string
-
-struct Longest_Common_Subsequence {
-
-	std::vector<vi> dp;
-	std::vector<vii> par;
-
-	Longest_Common_Subsequence() {
-		dp.resize(N, vi(N, -1));
-		par.resize(N, vii(N, mp(-1, -1)));
-	}
-
-	int lcs(int n, int m) {
-		if (n == -1 || m == -1) return 0;
-		if (dp[n][m] != -1) return dp[n][m];
-		if (s[n] == t[m]) {
-			par[n][m] = {n - 1, m - 1};
-			return dp[n][m] = 1 + lcs(n - 1, m - 1);
-		}
-		int l = lcs(n, m - 1), u = lcs(n - 1, m);
-		if (l > u) {
-			par[n][m] = {n, m - 1};
-			return dp[n][m] = l;
-		}
-		else {
-			par[n][m] = {n - 1, m};
-			return dp[n][m] = u;
-		}
-	}
-
-	void path(int n, int m) {
-		if (n == -1 || m == -1) return;
-		path(par[n][m].ff, par[n][m].ss);
-		if (s[n] == t[m]) printf("%c", s[n]);
-	}
-};
-
 // CHT in DP
 
 struct CHT_INC_MAX {
@@ -1001,126 +829,6 @@ struct CHT_INC_MAX {
         ll res = f(low, X);
         for (int i = low + 1; i <= high; i++) {
             res = max(res, f(i, X));
-        }
-        return res;
-    }
-};
-
-struct CHT_INC_MIN {
-    vl m, b;
-
-    bool bad(int f1, int f2, int f3) {
-        return 1.0 * (b[f2] - b[f1]) * (m[f1] - m[f3]) <= 1.0 * (b[f3] - b[f1]) * (m[f1] - m[f2]);
-    }
-
-    void add(ll M, ll B) {
-        m.pb(M), b.pb(B);
-        int sz = (int)m.size();
-        while(sz >= 3 && bad(sz - 3, sz - 2, sz - 1)) {
-            m.erase(m.end() - 2);
-            b.erase(b.end() - 2);
-            sz--;
-        }
-    }
-
-    ll f(int idx, ll X) {
-        return m[idx] * X + b[idx];
-    }
-
-    ll query(ll X) {
-        int low = 0, high = (int) m.size() - 1;
-        while (high - low >= 5) {
-            int mid1 = (low + low + high) / 3;
-            int mid2 = (low + high + high) / 3;
-            if (f(mid1, X) >= f(mid2, X)) {
-                low = mid1 + 1;
-            } else {
-                high = mid2 - 1;
-            }
-        }
-        ll res = f(low, X);
-        for (int i = low + 1; i <= high; i++) {
-            res = min(res, f(i, X));
-        }
-        return res;
-    }
-};
-
-struct CHT_DEC_MAX {
-    vl m, b;
-
-    bool bad(int f1, int f2, int f3) {
-        return 1.0 * (b[f2] - b[f1]) * (m[f1] - m[f3]) <= 1.0 * (b[f3] - b[f1]) * (m[f1] - m[f2]);
-    }
-
-    void add(ll M, ll B) {
-        m.pb(M), b.pb(B);
-        int sz = (int)m.size();
-        while (sz >= 3 && bad(sz - 3, sz - 2, sz - 1)) {
-            m.erase(m.end() - 2);
-            b.erase(b.end() - 2);
-            sz--;
-        }
-    }
-
-    ll f(int idx, ll X) {
-        return m[idx] * X + b[idx];
-    }
-
-    ll query(ll X) {
-        int low = 0, high = (int) m.size() - 1;
-        while (high - low >= 5) {
-            int mid1 = (low + low + high) / 3;
-            int mid2 = (low + high + high) / 3;
-            if (f(mid1, X) <= f(mid2, X)) {
-                low = mid1 + 1;
-            } else {
-                high = mid2 - 1;
-            }
-        }
-        ll res = f(low, X);
-        for (int i = low + 1; i <= high; i++) {
-            res = max(res, f(i, X));
-        }
-        return res;
-    }
-};
-
-struct CHT_DEC_MIN {
-    vl m, b;
-
-    bool bad(int f1, int f2, int f3) {
-        return 1.0 * (b[f2] - b[f1]) * (m[f1] - m[f3]) >= 1.0 * (b[f3] - b[f1]) * (m[f1] - m[f2]);
-    }
-
-    void add(ll M, ll B) {
-        m.pb(M), b.pb(B);
-        int sz = (int)m.size();
-        while (sz >= 3 && bad(sz - 3, sz - 2, sz - 1)) {
-            m.erase(m.end() - 2);
-            b.erase(b.end() - 2);
-            sz--;
-        }
-    }
-
-    ll f(int idx, ll X) {
-        return m[idx] * X + b[idx];
-    }
-
-    ll query(ll X) {
-        int low = 0, high = (int) m.size() - 1;
-        while (high - low >= 5) {
-            int mid1 = (low + low + high) / 3;
-            int mid2 = (low + high + high) / 3;
-            if (f(mid1, X) >= f(mid2, X)) {
-                low = mid1 + 1;
-            } else {
-                high = mid2 - 1;
-            }
-        }
-        ll res = f(low, X);
-        for (int i = low + 1; i <= high; i++) {
-            res = min(res, f(i, X));
         }
         return res;
     }
@@ -1225,37 +933,6 @@ ll bs(int n, int k) {
     }
     pll x = call(n, ans);
     return x.ff - (ll)k * ans;
-}
-
-// Digit DP
-
-int digitdP(int pos, int cnt, int f) {
-	if (cnt > k) return 0;
-	if (pos == num.size()) {
-		if (cnt == k) return 1;
-		return 0;
-	}
-	if (dp[pos][cnt][f] != -1) return dp[pos][cnt][f];
-	int res = 0, m = 9;
-	if (f == 0) m = num[pos];
-	for (int dgt = 0; dgt <= m; dgt++) {
-		int nf = f, ncnt = cnt;
-		if (dgt == d) ncnt++;
-		if (f == 0 && dgt < m) nf = 1;
-		res += digitdP(pos + 1, ncnt, nf);
-	}
-	return dp[pos][cnt][f] = res;
-}
-
-int call(int n) {
-	num.clear();
-	while (n) {
-		num.pb(n % 10);
-		n /= 10;
-	}
-	reverse(all(num));
-	fill(dp, -1);
-	return digitdP(0, 0, 0);
 }
 
 // Digit DP(Range)
@@ -1413,146 +1090,6 @@ void divide(int left, int right) {
     divide(left, mid);
     calc(left, right);
     divide(mid + 1, right);
-}
-
-// LIS 2D
-
-struct Longest_Increasing_Subsequence_2D {
-
-	std::vector<int> dp, mx;
-	vector<pair<pii, int> > tem;
-
-	Longest_Increasing_Subsequence_2D() {
-		dp.resize(N, 1);
-	}
-
-	int bs(int x, int y) {
-		int low = 0, high = tem.size() - 1, ans = 0;
-		while (low <= high) {
-			int mid = (low + high) >> 1;
-			if (tem[mid].ff.ff < x && tem[mid].ff.ss < y) ans = mx[mid], low = mid + 1;
-			else high = mid - 1;
-		}
-		return ans;
-	}
-
-	void calc(int left, int right) {
-		tem.clear(), mx.clear();
-		int mid = (left + right) >> 1;
-		for (int i = left; i <= mid; i++) {
-			tem.pb({{l[i], r[i]}, dp[i]});
-		}
-
-		sort(all(tem));
-
-		for (int i = 0; i < tem.size(); i++) {
-			if (i == 0) mx.pb(tem[i].ss);
-			else mx.pb(max(mx.back(), tem[i].ss));
-		}
-		for (int i = mid + 1; i <= right; i++) {
-			dp[i] = max(dp[i], bs(l[i], r[i]) + 1);
-		}
-	}
-
-	void divide(int left, int right) {
-		if (left == right) return;
-		int mid = (left + right) >> 1;
-		divide(left, mid);
-		calc(left, right);
-		divide(mid + 1, right);
-	}
-
-	int get_result(int n) {
-		divide(1, n);
-		int ans = 0;
-		for (int i = 1; i <= n; i++) {
-			ans = max(ans, dp[i]);
-		}
-		return ans;
-	}
-};
-
-// LSIS
-
-ll bs(ll x) {
-	int low = 0, high = tem.size() - 1;
-	ll ans = 0;
-	while (low <= high) {
-		int mid = (low + high) >> 1;
-		if (tem[mid].ff < x) ans = mx[mid], low = mid + 1;
-		else high = mid - 1;
-	}
-	return ans;
-}
-
-void call(int left, int right) {
-	tem.clear(), mx.clear();
-	int mid = (left + right) >> 1;
-	for (int i = left; i <= mid; i++) {
-		tem.pb({a[i], dp[i]});
-	}
-	sort(all(tem));
-	for (int i = 0; i < tem.size(); i++) {
-		if (i == 0) mx.pb(tem[i].ss);
-		else mx.pb(max(mx.back(), tem[i].ss));
-	}
-	for (int i = mid + 1; i <= right; i++) {
-		dp[i] = max(dp[i], bs(a[i]) + a[i]);
-	}
-}
-
-void divide(int left, int right) {
-	if (left == right) return;
-	int mid = (left + right) >> 1;
-	divide(left, mid);
-	call(left, right);
-	divide(mid + 1, right);
-}
-
-// MCM
-
-int call(int l, int r) {
-	if (l >= r) return 0;
-	if (dp[l][r] != -1) return dp[l][r];
-	int res = INT_MAX;
-	for (int mid = l; mid < r; mid++) {
-		res = min(res, call(l, mid) + call(mid + 1, r) + row[l] * col[mid] * col[r]);
-	}
-	return dp[l][r] = res;
-}
-
-// Maximum value Without adjacent
-
-int solve() {
-    int n = in();
-    for (int i = 1; i <= n; i++) {
-        a[i] = Lin();
-    }
-    ll inc = 0, exc = 0;
-    for (int i = 1; i <= n; i++) {
-        ll tem = inc;
-        inc = max(inc, exc + a[i]);
-        exc = tem;
-    }
-    printf("%lld\n", max(inc, exc));
-    return 0;
-}
-
-// MVC
-
-int mvc(int u, int state) {
-	if (!g[u].size()) return 0;
-	if (dp[u][state] != -1) return dp[u][state];
-	int sum = 0;
-	for (int i = 0; i < g[u].size(); i++) {
-		int v = g[u][i];
-		if (v != par[u]) {
-			par[v] = u;
-			if (!state) sum += mvc(v, 1);
-			else sum += min(mvc(v, 0), mvc(v, 1));
-		}
-	}
-	return dp[u][state] = sum + state;
 }
 
 // Bitmask DP
@@ -2724,39 +2261,6 @@ struct Sliding_Window_Min {
 ******************************************************************
 
 // Graph Theory
-
-// DFS Algo
-
-struct Depth_First_Search {
-
-	std::vector<vi> g;
-	std::vector<bool> vis;
-
-	Depth_First_Search() {
-		g.resize(N);
-		vis.resize(N, false);
-	}
-
-	void add_edge(int u, int v) {
-		g[u].push_back(v);
-		g[v].push_back(u);
-	}
-
-	void dfs(int u) {
-		vis[u] = true;
-		for (auto v : g[u]) {
-			if (!vis[v]) dfs(v);
-		}
-	}
-
-	int get_component(int n) {
-		int ans = 0;
-		for (int i = 1; i <= n; i++) {
-			if (!vis[i]) ans++, dfs(i);
-		}
-		return ans;
-	}
-};
 
 // DFS Algo in Grid
 
@@ -3974,73 +3478,6 @@ struct Prim_Minimum_Spanning_Tree {
 			}
 		}
 		return cost;
-	}
-};
-
-// Max Flow (Ford Fulkarson Algo)
-
-struct Max_Flow_Ford_Fulkerson {
-
-	std::vector<vi> g, cf;
-	std::vector<int> par;
-	std::vector<bool> vis;
-
-	Max_Flow_Ford_Fulkerson() {
-		g.resize(N);
-		cf.resize(N, vi(N, 0));
-		par.resize(N, 0);
-		vis.resize(N, false);
-	}
-
-	void add_edge(int u, int v, int w) {
-		g[u].push_back(v);
-		g[v].push_back(u);
-		cf[u][v] = w;
-	}
-
-	bool bfs(int n, int s, int sink) {
-		for (int i = 1; i <= n; i++) {
-			vis[i] = false, par[i] = 0;
-		}
-		queue<int>q;
-		q.push(s);
-		vis[s] = true;
-		while (!q.empty()) {
-			int u = q.front();
-			q.pop();
-			if (u == sink) return true;
-			for (int i = 0; i < g[u].size(); i++) {
-				int v = g[u][i];
-				if (!vis[v] && cf[u][v] > 0) {
-					vis[v] = true;
-					par[v] = u;
-					q.push(v);
-				}
-			}
-		}
-		return false;
-	}
-
-	ll maxflow(int n, int s, int sink) {
-		ll flow = 0;
-		while (bfs(n, s, sink)) {
-			int cap = INT_MAX;
-			int v = sink;
-			while (par[v]) {
-				int u = par[v];
-				cap = min(cap, cf[u][v]);
-				v = u;
-			}
-			v = sink;
-			while (par[v]) {
-				int u = par[v];
-				cf[u][v] -= cap;
-				cf[v][u] += cap;
-				v = u;
-			}
-			flow += (ll)cap;
-		}
-		return flow;
 	}
 };
 
