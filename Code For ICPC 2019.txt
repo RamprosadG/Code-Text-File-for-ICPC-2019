@@ -1303,6 +1303,41 @@ struct Kuhn_Algo {
 	}
 };
 
+// Bottom Up and Top Down Approach in Tree(DP)
+
+vi g[N];
+int a[N];
+ll res, ans;
+ll sum[N];
+ 
+void dfs(int u, int p = -1, int h = 0) {
+	res += 1LL * a[u] * h;
+	sum[u] = a[u];
+	for (int v : g[u]) {
+		if (v == p) continue;
+		dfs(v, u, h + 1);
+		sum[u] += sum[v];
+	}
+}
+ 
+void dfs2(int u, int p = -1) {
+	smax(ans, res);
+	for (int v : g[u]) {
+		if (v == p) continue;
+		res -= sum[v];
+		sum[u] -= sum[v];
+		res += sum[u];
+		sum[v] += sum[u];
+ 
+		dfs2(v, u);
+ 
+		sum[v] -= sum[u];
+		res -= sum[u];
+		sum[u] += sum[v];
+		res += sum[v];
+	}
+}
+
 // Disjoint Set Union (Color in a range with color c) 
 
 std::vector<pair<pii, int>> qry;
