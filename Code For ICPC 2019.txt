@@ -253,6 +253,71 @@ struct Josephus_Problem {
 	}
 };
 
+// Linear Diophantine Equation
+
+struct Linear_Diophantine_Equation {
+
+	int egcd(int a, int b, int &x, int &y) {
+		if (b == 0) {
+			x = 1, y = 0;
+			return a;
+		}
+		int x1, y1;
+		int d = egcd (b, a % b, x1, y1);
+		y = x1 - (a / b) * y1;
+		x = y1;
+		return d;
+	}
+
+	bool diophantine(int A, int B, int C, int &x, int &y) {
+		int g = gcd(A, B);
+		if (C % g != 0) return false;
+		int a = A / g, b = B / g, c = C / g;
+		egcd(a, b, x, y);
+		if (g < 0) a *= -1; b *= -1; c *= -1;
+		x *= c; y *= c;
+		return true;
+	}
+};
+
+// Trailing Zero & Number of Digits
+
+struct Trailing_Zero_Number_of_Digit {
+
+	ll calc(ll n, int base, int p) {
+		int cnt = 0;
+		while (base % p == 0) cnt++, base /= p;
+		ll cur = 0;
+		while (n) {
+			n /= p;
+			cur += n;
+		}
+		cur /= cnt;
+		return cur;
+	}
+
+	ll trailing_zero(ll n, int base) {
+		int tem = base;
+		ll ans = Inf;
+		for (int i = 2; i * i <= base; i++) {
+			if (tem % i == 0) {
+				while (tem % i == 0) tem /= i;
+				smin(ans, calc(n, base, i));
+			}
+		}
+		if (tem > 1) smin(ans, calc(n, tem, tem));
+		return ans;
+	}
+
+	int Number_of_Digit(int n, int base) {
+		double ans = 1.0;
+		for (int i = 1; i <= n; i++) {
+			ans += log10(1.0 * n) / log10(1.0 * base);
+		}
+		return ans;
+	}
+};
+
 **************************************************************************
 
 // String Algorithm
